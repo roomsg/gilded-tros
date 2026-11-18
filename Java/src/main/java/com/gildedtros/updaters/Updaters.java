@@ -4,23 +4,23 @@ import com.gildedtros.Item;
 
 /**
  * The only entry point to this package: ages items by one day according to their category.
- * These {@code update} methods are the package's only public API.
+ * These {@code process} methods are the package's only public API.
  */
-public final class ItemUpdaters {
+public final class Updaters {
 
-    private ItemUpdaters() {
+    private Updaters() {
         // static utility class
     }
 
     /** Ages a single item by one day. */
-    public static void update(Item item) {
+    public static void process(Item item) {
         ItemUpdater.forName(item.name).update(item);
     }
 
     /** Ages every item by one day; each item is updated independently. */
-    public static void update(Item[] items) {
+    public static void process(Item[] items) {
         for (Item item : items) {
-            update(item);
+            process(item);
         }
     }
 }

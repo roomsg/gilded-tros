@@ -1,6 +1,6 @@
 package com.gildedtros;
 
-import com.gildedtros.updaters.ItemUpdaters;
+import com.gildedtros.updaters.Updaters;
 
 class GildedTros {
     Item[] items;
@@ -10,6 +10,6 @@ class GildedTros {
     }
 
     public void updateQuality() {
-        ItemUpdaters.update(items);
+        Updaters.process(items);
     }
 }

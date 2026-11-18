@@ -1,6 +1,7 @@
 package com.gildedtros.updaters;
 
 import com.gildedtros.Item;
+import com.gildedtros.sanitizers.Sanitizer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;

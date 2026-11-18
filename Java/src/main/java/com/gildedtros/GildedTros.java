@@ -1,7 +1,7 @@
 package com.gildedtros;
 
-import com.gildedtros.updaters.Sanitizer;
-import com.gildedtros.updaters.Sanitizers;
+import com.gildedtros.sanitizers.Sanitizer;
+import com.gildedtros.sanitizers.Sanitizers;
 import com.gildedtros.updaters.Updaters;
 
 class GildedTros {

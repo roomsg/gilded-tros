@@ -1,14 +1,15 @@
-package com.gildedtros.updaters;
+package com.gildedtros.sanitizers;
 
 import com.gildedtros.Item;
+import com.gildedtros.updaters.ItemUpdater;
 
 /**
- * Hook that {@link Updaters} calls around every item update, e.g. to report or correct items whose
+ * Hook that {@link com.gildedtros.updaters.Updaters} calls around every item update, e.g. to report or correct items whose
  * values fall outside what their updater allows. Ready-made implementations are in {@link Sanitizers}.
  *
  * <p>For each item it is called twice with the same updater and the same {@link Item} instance:
  * once at {@link Stage#INPUT}, before the update, and once at {@link Stage#OUTPUT}, after it.
- * Any exception it throws propagates out of {@link Updaters#process(Item)} and stops the processing.
+ * Any exception it throws propagates out of {@link com.gildedtros.updaters.Updaters#process(Item)} and stops the processing.
  */
 public interface Sanitizer {
 

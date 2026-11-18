@@ -5,8 +5,9 @@ import com.gildedtros.Item;
 /**
  * Applies one day of ageing to an item. Each item category has its own implementation;
  * {@link Updaters} picks the right one for an item name. The implementations are package-private
- * (they normally extend {@code BaseItemUpdater}); this interface is public so that a {@link Sanitizer}
- * can see which updater handles an item and what quality range it allows.
+ * (they normally extend {@code BaseItemUpdater}); this interface is public so that a
+ * {@link com.gildedtros.sanitizers.Sanitizer} can see which updater handles an item and what
+ * quality range it allows.
  */
 public interface ItemUpdater {
 

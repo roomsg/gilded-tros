@@ -1,6 +1,7 @@
-package com.gildedtros.updaters;
+package com.gildedtros.sanitizers;
 
 import com.gildedtros.Item;
+import com.gildedtros.updaters.ItemUpdater;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -15,7 +16,7 @@ public final class Sanitizers {
         // holder for the Sanitizer implementations
     }
 
-    /** Does nothing and reports nothing; the default for {@link Updaters#Updaters()}. */
+    /** Does nothing and reports nothing; the default for {@link com.gildedtros.updaters.Updaters#Updaters()}. */
     public static final Sanitizer NOOP = new Sanitizer() {
         @Override
         public void verify(Stage stage, ItemUpdater itemUpdater, Item item) {

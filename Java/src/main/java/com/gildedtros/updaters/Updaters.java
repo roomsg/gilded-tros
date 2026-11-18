@@ -1,6 +1,8 @@
 package com.gildedtros.updaters;
 
 import com.gildedtros.Item;
+import com.gildedtros.sanitizers.Sanitizer;
+import com.gildedtros.sanitizers.Sanitizers;
 
 import java.util.Objects;
 

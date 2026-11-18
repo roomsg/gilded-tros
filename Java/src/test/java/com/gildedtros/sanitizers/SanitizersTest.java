@@ -1,6 +1,7 @@
-package com.gildedtros.updaters;
+package com.gildedtros.sanitizers;
 
 import com.gildedtros.Item;
+import com.gildedtros.updaters.Updaters;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;

@@ -28,9 +28,10 @@ Gradle wrapper (Gradle 9.9.1). Running the build needs **JDK 17+** (tested on 21
 Under `src/main/java/com/gildedtros/`:
 
 - `GildedTros.updateQuality()` calls `Updaters.process(items)`.
-- The `updaters/` subpackage holds all updater classes. Its **only** public API is the final, non-instantiable `Updaters` class with two static methods: `process(Item)` ages one item, and the convenience `process(Item[])` loops over an array calling `process(Item)` on each. Everything else (`ItemUpdater`, its subclasses, `forName`, helpers, constants) is package-private; keep it that way when adding categories.
-- `ItemUpdater` (abstract) is the single place that maps an **exact** item name to a category via a `switch`; unknown names (including other "Backstage passes for …") are normal items. It also holds the name constants, the 0/50 quality limits and the shared `increaseQuality` / `decreaseQuality` / `isExpired` helpers.
-- One stateless subclass per category: `NormalItemUpdater`, `GoodWineUpdater`, `LegendaryItemUpdater`, `BackstagePassUpdater`, `SmellyItemUpdater`. To add a category, add a subclass and its `case` lines in `forName`.
+- The `updaters/` subpackage holds all updater classes. Its **only** public API is the final, non-instantiable `Updaters` class with two static methods: `process(Item)` ages one item, and the convenience `process(Item[])` loops over an array calling `process(Item)` on each. Everything else is package-private or private; keep it that way when adding categories.
+- `Updaters` is also the single place that maps an **exact** item name to a category: a private `forName` `switch` over private name constants, returning one shared updater instance per category. Unknown names (including other "Backstage passes for …") are normal items.
+- `ItemUpdater` (abstract, package-private) is the base class: `update(Item)`, the 0/50 quality limits and the shared `increaseQuality` / `decreaseQuality` / `isExpired` helpers.
+- One stateless subclass per category: `NormalItemUpdater`, `GoodWineUpdater`, `LegendaryItemUpdater`, `BackstagePassUpdater`, `SmellyItemUpdater`. To add a category, add a subclass, plus a shared instance and its `case` lines in `Updaters.forName`.
 - The quality helpers leave an out-of-range starting value alone instead of clamping it (e.g. a normal item at 60 drops to 59), which matches the original code's behavior.
 - `Item` is a plain data class (`name`, `sellIn`, `quality`).
 

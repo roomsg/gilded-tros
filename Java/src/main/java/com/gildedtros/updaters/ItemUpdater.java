@@ -4,45 +4,12 @@ import com.gildedtros.Item;
 
 /**
  * Applies one day of ageing to an item. Each item category has its own subclass;
- * {@link #forName(String)} picks the right one.
+ * {@link Updaters} picks the right one for an item name.
  */
 abstract class ItemUpdater {
 
     static final int MIN_QUALITY = 0;
     static final int MAX_QUALITY = 50;
-
-    static final String GOOD_WINE = "Good Wine";
-    static final String B_DAWG_KEYCHAIN = "B-DAWG Keychain";
-    static final String REFACTOR_PASS = "Backstage passes for Re:Factor";
-    static final String HAXX_PASS = "Backstage passes for HAXX";
-    static final String DUPLICATE_CODE = "Duplicate Code";
-    static final String LONG_METHODS = "Long Methods";
-    static final String UGLY_VARIABLE_NAMES = "Ugly Variable Names";
-
-    private static final ItemUpdater NORMAL = new NormalItemUpdater();
-    private static final ItemUpdater GOOD_WINE_UPDATER = new GoodWineUpdater();
-    private static final ItemUpdater LEGENDARY = new LegendaryItemUpdater();
-    private static final ItemUpdater BACKSTAGE_PASS = new BackstagePassUpdater();
-    private static final ItemUpdater SMELLY = new SmellyItemUpdater();
-
-    /** Item names must match exactly; anything unknown is a normal item. */
-    static ItemUpdater forName(String name) {
-        switch (name) {
-            case GOOD_WINE:
-                return GOOD_WINE_UPDATER;
-            case B_DAWG_KEYCHAIN:
-                return LEGENDARY;
-            case REFACTOR_PASS:
-            case HAXX_PASS:
-                return BACKSTAGE_PASS;
-            case DUPLICATE_CODE:
-            case LONG_METHODS:
-            case UGLY_VARIABLE_NAMES:
-                return SMELLY;
-            default:
-                return NORMAL;
-        }
-    }
 
     abstract void update(Item item);
 

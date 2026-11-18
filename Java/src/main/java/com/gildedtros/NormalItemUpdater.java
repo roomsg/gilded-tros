@@ -1,0 +1,11 @@
+package com.gildedtros;
+
+/** Loses 1 quality per day, 2 once the sell-by date has passed. */
+class NormalItemUpdater extends ItemUpdater {
+
+    @Override
+    void update(Item item) {
+        item.sellIn--;
+        decreaseQuality(item, isExpired(item) ? 2 : 1);
+    }
+}

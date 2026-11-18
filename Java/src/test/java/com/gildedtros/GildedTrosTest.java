@@ -172,6 +172,18 @@ class GildedTrosTest {
             assertItem(afterDays(15, HAXX_PASS, 15, 0), 0, 30);
             assertItem(afterDays(16, HAXX_PASS, 15, 0), -1, 0);
         }
+
+        @ParameterizedTest(name = "sellIn {0}, quality {1} -> sellIn {2}, quality {3}")
+        @CsvSource({
+                "15, 20, 14, 19",   // normal -1, not +1
+                "10, 20, 9, 19",    // no +2 at 10 days or less
+                "5, 20, 4, 19",     // no +3 at 5 days or less
+                "0, 20, -1, 18",    // normal -2 after the sell-by date, not dropping to 0
+                "0, 1, -1, 0",      // never negative
+        })
+        void passesForOtherConferencesAreNormalItems(int sellIn, int quality, int expectedSellIn, int expectedQuality) {
+            assertItem(afterOneDay("Backstage passes for devoxx", sellIn, quality), expectedSellIn, expectedQuality);
+        }
     }
 
     @Nested

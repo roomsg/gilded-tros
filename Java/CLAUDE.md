@@ -10,7 +10,7 @@ The task: refactor `GildedTros.updateQuality()` safely, then add the "smelly ite
 
 ## Commands
 
-Gradle wrapper (Gradle 6.5, Java 8 source level; Gradle 6.5 needs a JDK ≤ 14). A `pom.xml` also exists, but it lacks the ApprovalTests dependency, so prefer Gradle.
+Gradle wrapper (Gradle 9.9.1). Running the build needs **JDK 17+** (tested on 21); the code compiles with `options.release = 8`, so the output stays Java 8 bytecode and Java 8 API (no newer language features or library calls). A `pom.xml` also exists, but it lacks the ApprovalTests dependency, so prefer Gradle.
 
 ```bash
 ./gradlew test                                              # run all tests

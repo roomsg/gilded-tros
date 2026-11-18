@@ -11,11 +11,24 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
     testImplementation 'com.approvaltests:approvaltests:5.0.0'
+    // Gradle 9 no longer bundles the JUnit Platform launcher; it must match the JUnit version above.
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.6.2'
 }
 
 group = 'com.gildedtros'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType(JavaCompile).configureEach {
+    // Compile against the Java 8 API (not just the Java 8 bytecode level), whatever JDK runs Gradle.
+    options.release = 8
+    // Newer JDKs warn that release 8 is obsolete; silence that warning.
+    options.compilerArgs << '-Xlint:-options'
+}
 
 test {
     useJUnitPlatform()

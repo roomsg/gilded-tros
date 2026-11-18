@@ -36,11 +36,14 @@ whichever JDK runs the build.
 ./gradlew test
 ./gradlew test --tests com.gildedtros.GildedTrosTest   # a single test class
 ```
-## Assessment Feedback 
+
+## Assessment Feedback
+
 ### Remarks
-- The original implementation for the "Good Wine" increases the quality, as specified, yet increases the quality twice as hard __once expired__. I kept that logic for now, not knowing if it is a bug or a desired behavior.
+
+- The original implementation for the "Good Wine" increases the quality, as specified, yet increases the quality twice as fast __once expired__. I kept that logic for now, not knowing if it is a bug or a desired behavior.
 
 ### Assumptions
+
 - Java devs@axxes are all on (at least) JDK17 (release 2021).
 - The requirements were not specifying which conferences are considered 'very interesting'. The original implementation only considered 'Re:Factor' and 'HAXX' as very interesting, I kept that same behavior.
-

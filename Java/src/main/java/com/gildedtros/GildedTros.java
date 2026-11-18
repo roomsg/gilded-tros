@@ -1,5 +1,7 @@
 package com.gildedtros;
 
+import com.gildedtros.updaters.ItemUpdater;
+
 class GildedTros {
     Item[] items;
 

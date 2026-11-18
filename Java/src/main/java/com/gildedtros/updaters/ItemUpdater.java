@@ -1,10 +1,12 @@
-package com.gildedtros;
+package com.gildedtros.updaters;
+
+import com.gildedtros.Item;
 
 /**
  * Applies one day of ageing to an item. Each item category has its own subclass;
  * {@link #forName(String)} picks the right one.
  */
-abstract class ItemUpdater {
+public abstract class ItemUpdater {
 
     static final int MIN_QUALITY = 0;
     static final int MAX_QUALITY = 50;
@@ -20,7 +22,7 @@ abstract class ItemUpdater {
     private static final ItemUpdater BACKSTAGE_PASS = new BackstagePassUpdater();
 
     /** Item names must match exactly; anything unknown is a normal item. */
-    static ItemUpdater forName(String name) {
+    public static ItemUpdater forName(String name) {
         switch (name) {
             case GOOD_WINE:
                 return GOOD_WINE_UPDATER;
@@ -34,7 +36,7 @@ abstract class ItemUpdater {
         }
     }
 
-    abstract void update(Item item);
+    public abstract void update(Item item);
 
     /** Raises quality by {@code amount}, but never above {@link #MAX_QUALITY}. */
     static void increaseQuality(Item item, int amount) {

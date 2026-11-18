@@ -1,4 +1,6 @@
-package com.gildedtros;
+package com.gildedtros.updaters;
+
+import com.gildedtros.Item;
 
 /**
  * Gains quality faster as the conference approaches: +1 per day, +2 with 10 days or less,
@@ -7,7 +9,7 @@ package com.gildedtros;
 class BackstagePassUpdater extends ItemUpdater {
 
     @Override
-    void update(Item item) {
+    public void update(Item item) {
         int daysLeft = item.sellIn;
         item.sellIn--;
 

@@ -2,6 +2,20 @@
 
 The instructions are in [GildedTrosRequirements.txt](GildedTrosRequirements.txt).
 
+## Getting the code
+
+The repository lives on GitHub at [roomsg/gilded-tros](https://github.com/roomsg/gilded-tros)
+(currently private, so you need to be given access). Work happens on `main`.
+
+```bash
+git clone git@github.com:roomsg/gilded-tros.git
+cd gilded-tros/Java
+```
+
+The repository holds the kata in several languages; this `Java/` folder is self-contained.
+It started as a copy of the Axxes Gilded Tros kata, which is no longer tracked as a remote,
+so `origin` is the GitHub repository and the only one to push to.
+
 ## Requirements
 
 | | Java version |

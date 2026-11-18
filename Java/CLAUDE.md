@@ -25,8 +25,13 @@ Gradle wrapper (Gradle 9.9.1). Running the build needs **JDK 17+** (tested on 21
 
 ## Code structure
 
-- `src/main/java/com/gildedtros/GildedTros.java` — all business logic in one nested-if `updateQuality()` that dispatches on exact item-name string equality.
-- `src/main/java/com/gildedtros/Item.java` — plain data class (`name`, `sellIn`, `quality`).
+All in `src/main/java/com/gildedtros/`:
+
+- `GildedTros.updateQuality()` loops over `items` and delegates each one to `ItemUpdater.forName(item.name).update(item)`.
+- `ItemUpdater` (abstract) is the single place that maps an **exact** item name to a category via a `switch`; unknown names (including other "Backstage passes for …") are normal items. It also holds the name constants, the 0/50 quality limits and the shared `increaseQuality` / `decreaseQuality` / `isExpired` helpers.
+- One stateless subclass per category: `NormalItemUpdater`, `GoodWineUpdater`, `LegendaryItemUpdater`, `BackstagePassUpdater`. To add a category (e.g. smelly items), add a subclass and its `case` lines in `forName`.
+- The quality helpers leave an out-of-range starting value alone instead of clamping it (e.g. a normal item at 60 drops to 59), which matches the original code's behavior.
+- `Item` is a plain data class (`name`, `sellIn`, `quality`).
 
 ## Rules from the spec that constrain changes
 

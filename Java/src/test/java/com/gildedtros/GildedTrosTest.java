@@ -1,6 +1,5 @@
 package com.gildedtros;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -192,21 +191,18 @@ class GildedTrosTest {
 
         @ParameterizedTest(name = "{0}")
         @ValueSource(strings = { "Duplicate Code", "Long Methods", "Ugly Variable Names" })
-        @Disabled("Smelly items feature is not implemented yet")
         void degradeTwiceAsFastAsNormalItems(String name) {
             assertItem(afterOneDay(name, 3, 6), 2, 4);
         }
 
         @ParameterizedTest(name = "{0}")
         @ValueSource(strings = { "Duplicate Code", "Long Methods", "Ugly Variable Names" })
-        @Disabled("Smelly items feature is not implemented yet")
         void degradeTwiceAsFastAsNormalItemsAfterSellByDate(String name) {
             assertItem(afterOneDay(name, 0, 10), -1, 6);
         }
 
         @ParameterizedTest(name = "{0}")
         @ValueSource(strings = { "Duplicate Code", "Long Methods", "Ugly Variable Names" })
-        @Disabled("Smelly items feature is not implemented yet")
         void qualityIsNeverNegative(String name) {
             assertEquals(0, afterOneDay(name, 0, 3).quality);
         }

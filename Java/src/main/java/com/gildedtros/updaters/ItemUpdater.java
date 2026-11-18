@@ -15,11 +15,15 @@ abstract class ItemUpdater {
     static final String B_DAWG_KEYCHAIN = "B-DAWG Keychain";
     static final String REFACTOR_PASS = "Backstage passes for Re:Factor";
     static final String HAXX_PASS = "Backstage passes for HAXX";
+    static final String DUPLICATE_CODE = "Duplicate Code";
+    static final String LONG_METHODS = "Long Methods";
+    static final String UGLY_VARIABLE_NAMES = "Ugly Variable Names";
 
     private static final ItemUpdater NORMAL = new NormalItemUpdater();
     private static final ItemUpdater GOOD_WINE_UPDATER = new GoodWineUpdater();
     private static final ItemUpdater LEGENDARY = new LegendaryItemUpdater();
     private static final ItemUpdater BACKSTAGE_PASS = new BackstagePassUpdater();
+    private static final ItemUpdater SMELLY = new SmellyItemUpdater();
 
     /** Item names must match exactly; anything unknown is a normal item. */
     static ItemUpdater forName(String name) {
@@ -31,6 +35,10 @@ abstract class ItemUpdater {
             case REFACTOR_PASS:
             case HAXX_PASS:
                 return BACKSTAGE_PASS;
+            case DUPLICATE_CODE:
+            case LONG_METHODS:
+            case UGLY_VARIABLE_NAMES:
+                return SMELLY;
             default:
                 return NORMAL;
         }

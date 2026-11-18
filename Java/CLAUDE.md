@@ -15,11 +15,11 @@ Gradle wrapper (Gradle 9.9.1). Running the build needs **JDK 17+** (tested on 21
 ```bash
 ./gradlew test                                              # run all tests
 ./gradlew test --tests com.gildedtros.GildedTrosTest        # one test class
-./gradlew test --tests 'com.gildedtros.GildedTrosTest.foo'  # one test method
+./gradlew test --tests 'com.gildedtros.GildedTrosTest$GoodWine'  # one @Nested group
 ./gradlew build
 ```
 
-The shipped `GildedTrosTest.foo` fails on purpose (asserts `"fixme"`) — it is a placeholder to replace with real tests.
+`GildedTrosTest` holds one `@Nested` class per item category, testing against the requirements. It uses dummy names like `"foo"` for normal items. The smelly-item tests are `@Disabled` until that feature exists; re-enable them when implementing it.
 
 `TexttestFixture` (in `src/test`) is a `main` that prints inventory state per day for a fixed item list; pass a day count as the first argument. It is the natural basis for a golden-master / ApprovalTests characterization test (`com.approvaltests:approvaltests` is already a Gradle test dependency) to lock current behavior before refactoring.
 

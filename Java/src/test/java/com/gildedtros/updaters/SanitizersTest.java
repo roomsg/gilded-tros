@@ -66,7 +66,7 @@ class SanitizersTest {
     @Test
     void logRejectsANullOutput() {
         NullPointerException e = assertThrows(NullPointerException.class, () -> Sanitizers.log(null));
-        assertEquals("output", e.getMessage());
+        assertEquals("output must not be null", e.getMessage());
     }
 
     /** LOG must print the same messages to System.out. */

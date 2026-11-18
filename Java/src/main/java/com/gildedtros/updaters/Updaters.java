@@ -6,9 +6,14 @@ import java.util.Objects;
 
 /**
  * Entry point to this package: ages items by one day according to their category.
- * The {@link Sanitizer} passed to the constructor (default {@link Sanitizers#NOOP}) sees each
- * item just before ({@link Sanitizer.Stage#INPUT}) and just after ({@link Sanitizer.Stage#OUTPUT})
- * its update.
+ *
+ * <p>Each item is handled by the updater for its category, chosen by an exact match on the item's
+ * name; any name that isn't a known special item is aged as a normal item. The {@link Sanitizer}
+ * given to the constructor (default {@link Sanitizers#NOOP}) sees each item just before
+ * ({@link Sanitizer.Stage#INPUT}) and just after ({@link Sanitizer.Stage#OUTPUT}) its update.
+ *
+ * <p>Instances are immutable and the category updaters are stateless, so one instance can be reused
+ * for any number of days.
  */
 public final class Updaters {
 
@@ -28,33 +33,59 @@ public final class Updaters {
 
     private final Sanitizer sanitizer;
 
+    /** Creates an instance that does no sanitizing ({@link Sanitizers#NOOP}). */
     public Updaters() {
         this(Sanitizers.NOOP);
     }
 
-    /** @throws NullPointerException if {@code sanitizer} is null; use {@link Sanitizers#NOOP} for no sanitizing */
+    /**
+     * Creates an instance that calls {@code sanitizer} before and after every item update.
+     *
+     * @param sanitizer the sanitizer to call, e.g. {@link Sanitizers#LOG}; use {@link Sanitizers#NOOP}
+     *                  (or the no-argument constructor) for no sanitizing
+     * @throws NullPointerException if {@code sanitizer} is null
+     */
     public Updaters(Sanitizer sanitizer) {
-        this.sanitizer = Objects.requireNonNull(sanitizer, "sanitizer");
+        this.sanitizer = Objects.requireNonNull(sanitizer, "sanitizer must not be null");
     }
 
-    /** Ages a single item by one day. */
-    public void process(Item item) {
-        ItemUpdater updater = forName(item.name);
-        verifyInput(updater, item);
-        updater.update(item);
-        verifyOutput(updater, item);
-    }
-
-    /** Ages every item by one day; each item is updated independently. */
+    /**
+     * Ages every item by one day; each item is updated independently, in array order, exactly as
+     * {@link #process(Item)} would.
+     *
+     * @param items the items to age; they are changed in place
+     * @throws NullPointerException if {@code items} is null, or if an item or its name is null;
+     *         the items before that one have already been updated by then
+     */
     public void process(Item[] items) {
         for (Item item : items) {
             process(item);
         }
     }
 
+    /**
+     * Ages a single item by one day, using the updater for its category, with the sanitizer called
+     * just before and just after the update.
+     *
+     * @param item the item to age; its {@code sellIn} and {@code quality} are changed in place
+     * @throws NullPointerException if {@code item} or its name is null
+     */
+    public void process(Item item) {
+        Objects.requireNonNull(item, "item must not be null");
+        ItemUpdater updater = forName(item.name);
+        processWith(updater, item);
+    }
+
+    /** Runs the sanitizer before and after {@code updater} ages {@code item}. Package-private for testing. */
+    void processWith(ItemUpdater updater, Item item) {
+        verifyInput(updater, item);
+        updater.update(item);
+        verifyOutput(updater, item);
+    }
+
     /** Item names must match exactly; anything unknown is a normal item. Package-private for testing. */
     ItemUpdater forName(String name) {
-        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(name, "name must not be null");
         switch (name) {
             case GOOD_WINE:
                 return GOOD_WINE_UPDATER;

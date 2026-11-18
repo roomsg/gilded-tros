@@ -77,6 +77,6 @@ class UpdatersForNameTest {
     @Test
     void rejectsANullName() {
         NullPointerException e = assertThrows(NullPointerException.class, () -> updaters.forName(null));
-        assertEquals("name", e.getMessage());
+        assertEquals("name must not be null", e.getMessage());
     }
 }

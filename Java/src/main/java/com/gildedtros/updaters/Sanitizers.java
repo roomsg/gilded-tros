@@ -5,13 +5,17 @@ import com.gildedtros.Item;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * The available {@link Sanitizer} implementations: {@link #NOOP}, {@link #LOG}, and {@link #log(Consumer)}
+ * for logging to an output of your choice. Not instantiable.
+ */
 public final class Sanitizers {
 
     private Sanitizers() {
         // holder for the Sanitizer implementations
     }
 
-    // NOOP sanitizer, not doing/reporting anything
+    /** Does nothing and reports nothing; the default for {@link Updaters#Updaters()}. */
     public static final Sanitizer NOOP = new Sanitizer() {
         @Override
         public void verify(Stage stage, ItemUpdater itemUpdater, Item item) {
@@ -19,17 +23,25 @@ public final class Sanitizers {
         }
     };
 
-    // reporting only sanitizer, simply logging anomalies to System.out without changing anything
-    // (a lambda rather than System.out::println, so it uses System.out as it is at the time of logging)
+    /**
+     * Reports anomalies to {@code System.out} without changing anything: one line per stage at which an
+     * item's quality is below its updater's {@linkplain ItemUpdater#getMinQuality() minimum} or above its
+     * {@linkplain ItemUpdater#getMaxQuality() maximum}. Same as {@code log(message -> System.out.println(message))}.
+     */
+    // a lambda rather than System.out::println, so it uses System.out as it is at the time of logging
     // TODO - discuss if slf4j (or any other logging util) would make more sense
     public static final Sanitizer LOG = log(message -> System.out.println(message));
 
     /**
-     * Reporting only sanitizer, like {@link #LOG}, but passing each anomaly message to {@code output}
-     * (e.g. a logger, or a list in tests) instead of printing it.
+     * Creates a reporting only sanitizer, like {@link #LOG}, that passes each anomaly message to
+     * {@code output} instead of printing it. It never changes the item.
+     *
+     * @param output receives one message per anomaly, e.g. {@code logger::warn}, or {@code list::add} in tests
+     * @return the new sanitizer
+     * @throws NullPointerException if {@code output} is null
      */
     public static Sanitizer log(Consumer<String> output) {
-        Objects.requireNonNull(output, "output");
+        Objects.requireNonNull(output, "output must not be null");
         return new Sanitizer() {
             @Override
             public void verify(Stage stage, ItemUpdater itemUpdater, Item item) {

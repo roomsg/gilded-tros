@@ -1,70 +1,99 @@
 package com.gildedtros.updaters;
 
 import com.gildedtros.Item;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.mockito.InOrder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 class UpdatersTest {
 
-    /** One call to Sanitizer.handle, with the item's values as they were at that moment. */
-    private static final class Call {
-        final Sanitizer.Stage stage;
-        final ItemUpdater updater;
-        final String name;
-        final int sellIn;
-        final int quality;
+    private final Sanitizer sanitizer = mock(Sanitizer.class);
+    private final Updaters updaters = new Updaters(sanitizer);
 
-        Call(Sanitizer.Stage stage, ItemUpdater updater, Item item) {
-            this.stage = stage;
-            this.updater = updater;
-            this.name = item.name;
-            this.sellIn = item.sellIn;
-            this.quality = item.quality;
-        }
-    }
-
-    private final List<Call> calls = new ArrayList<>();
-    private final Updaters updaters = new Updaters((stage, updater, item) -> calls.add(new Call(stage, updater, item)));
-
-    @Test
-    void callsTheGivenSanitizerBeforeAndAfterTheUpdate() {
-        updaters.process(new Item("foo", 10, 20));
-
-        assertEquals(2, calls.size());
-        assertEquals(Sanitizer.Stage.INPUT, calls.get(0).stage);
-        assertEquals(10, calls.get(0).sellIn);
-        assertEquals(20, calls.get(0).quality);
-        assertEquals(Sanitizer.Stage.OUTPUT, calls.get(1).stage);
-        assertEquals(9, calls.get(1).sellIn);
-        assertEquals(19, calls.get(1).quality);
-        assertSame(calls.get(0).updater, calls.get(1).updater);
+    /** Every test must have verified all of its sanitizer calls. */
+    @AfterEach
+    void noOtherSanitizerCalls() {
+        verifyNoMoreInteractions(sanitizer);
     }
 
     @Test
-    void processingAnArrayCallsTheSanitizerAroundEachItemInTurn() {
-        updaters.process(new Item[] { new Item("foo", 10, 20), new Item("Good Wine", 2, 0) });
+    void processWithRunsTheSanitizerBeforeAndAfterTheUpdate() {
+        ItemUpdater updater = mock(ItemUpdater.class);
+        Item item = new Item("foo", 10, 20);
 
-        assertEquals(4, calls.size());
-        assertCall(calls.get(0), Sanitizer.Stage.INPUT, "foo");
-        assertCall(calls.get(1), Sanitizer.Stage.OUTPUT, "foo");
-        assertCall(calls.get(2), Sanitizer.Stage.INPUT, "Good Wine");
-        assertCall(calls.get(3), Sanitizer.Stage.OUTPUT, "Good Wine");
+        updaters.processWith(updater, item);
+
+        InOrder inOrder = inOrder(sanitizer, updater);
+        inOrder.verify(sanitizer).verify(Sanitizer.Stage.INPUT, updater, item);
+        inOrder.verify(updater).update(item);
+        inOrder.verify(sanitizer).verify(Sanitizer.Stage.OUTPUT, updater, item);
+        verifyNoMoreInteractions(updater);
+    }
+
+    @Test
+    void processingAnItemUsesTheUpdaterForItsName() {
+        Item item = new Item("Good Wine", 2, 0);
+        ItemUpdater expected = updaters.forName("Good Wine");
+
+        updaters.process(item);
+
+        verify(sanitizer).verify(Sanitizer.Stage.INPUT, expected, item);
+        verify(sanitizer).verify(Sanitizer.Stage.OUTPUT, expected, item);
+    }
+
+    @Test
+    void processingAnArrayProcessesEachItemInTurn() {
+        Item first = new Item("foo", 10, 20);
+        Item second = new Item("Good Wine", 2, 0);
+
+        updaters.process(new Item[] { first, second });
+
+        InOrder inOrder = inOrder(sanitizer);
+        inOrder.verify(sanitizer).verify(same(Sanitizer.Stage.INPUT), any(ItemUpdater.class), same(first));
+        inOrder.verify(sanitizer).verify(same(Sanitizer.Stage.OUTPUT), any(ItemUpdater.class), same(first));
+        inOrder.verify(sanitizer).verify(same(Sanitizer.Stage.INPUT), any(ItemUpdater.class), same(second));
+        inOrder.verify(sanitizer).verify(same(Sanitizer.Stage.OUTPUT), any(ItemUpdater.class), same(second));
+    }
+
+    @Test
+    void processingAnEmptyArrayDoesNothing() {
+        updaters.process(new Item[0]);
+
+        verifyNoInteractions(sanitizer);
+    }
+
+    @Test
+    void rejectsANullItem() {
+        NullPointerException e = assertThrows(NullPointerException.class, () -> updaters.process((Item) null));
+        assertEquals("item must not be null", e.getMessage());
+    }
+
+    @Test
+    void rejectsANullItemInAnArray() {
+        Item first = new Item("foo", 10, 20);
+
+        NullPointerException e = assertThrows(NullPointerException.class,
+                () -> updaters.process(new Item[] { first, null }));
+        assertEquals("item must not be null", e.getMessage());
+
+        // the items before the null one have already been processed
+        verify(sanitizer).verify(same(Sanitizer.Stage.INPUT), any(ItemUpdater.class), same(first));
+        verify(sanitizer).verify(same(Sanitizer.Stage.OUTPUT), any(ItemUpdater.class), same(first));
     }
 
     @Test
     void rejectsANullSanitizer() {
         NullPointerException e = assertThrows(NullPointerException.class, () -> new Updaters(null));
-        assertEquals("sanitizer", e.getMessage());
-    }
-
-    private static void assertCall(Call call, Sanitizer.Stage expectedStage, String expectedName) {
-        assertEquals(expectedStage, call.stage);
-        assertEquals(expectedName, call.name);
+        assertEquals("sanitizer must not be null", e.getMessage());
     }
 }

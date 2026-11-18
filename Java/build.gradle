@@ -11,6 +11,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
     testImplementation 'com.approvaltests:approvaltests:5.0.0'
+    // Mockito 5 is built for Java 11, which tests compiled with --release 8 can't use; 4.x is the last Java 8 line.
+    testImplementation 'org.mockito:mockito-core:4.11.0'
     // Gradle 9 no longer bundles the JUnit Platform launcher; it must match the JUnit version above.
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.6.2'
 }

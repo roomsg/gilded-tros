@@ -7,7 +7,7 @@ import com.gildedtros.Item;
  * {@link Updaters} picks the right one for an item name. Implementations normally extend
  * {@link BaseItemUpdater}.
  */
-interface ItemUpdater {
+public interface ItemUpdater {
 
     /** Lowest quality this updater lets an item reach. */
     int getMinQuality();

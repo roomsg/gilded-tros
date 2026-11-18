@@ -30,8 +30,8 @@ Under `src/main/java/com/gildedtros/`:
 - `GildedTros.updateQuality()` calls `Updaters.process(items)`.
 - The `updaters/` subpackage holds all updater classes. Its **only** public API is the final, non-instantiable `Updaters` class with two static methods: `process(Item)` ages one item, and the convenience `process(Item[])` loops over an array calling `process(Item)` on each. Everything else is package-private or private; keep it that way when adding categories.
 - `Updaters` is also the single place that maps an **exact** item name to a category: a private `forName` `switch` over private name constants, returning one shared updater instance per category. Unknown names (including other "Backstage passes for …") are normal items.
-- `ItemUpdater` (abstract, package-private) is the base class: `update(Item)`, the 0/50 quality limits and the shared `increaseQuality` / `decreaseQuality` / `isExpired` helpers.
-- One stateless subclass per category: `NormalItemUpdater`, `GoodWineUpdater`, `LegendaryItemUpdater`, `BackstagePassUpdater`, `SmellyItemUpdater`. To add a category, add a subclass, plus a shared instance and its `case` lines in `Updaters.forName`.
+- `ItemUpdater` (abstract, package-private) is the base class: `update(Item)` plus the instance helpers `increaseQuality` / `decreaseQuality` / `isExpired`. Each instance has its own final `minQuality` / `maxQuality` (with getters): the no-arg constructor uses the static `DEFAULT_MIN_QUALITY` (0) and `DEFAULT_MAX_QUALITY` (50), and `ItemUpdater(min, max)` lets a subclass set its own range, rejecting min > max or min < 0 (`LegendaryItemUpdater` uses 80 and 80).
+- One immutable subclass per category: `NormalItemUpdater`, `GoodWineUpdater`, `LegendaryItemUpdater`, `BackstagePassUpdater`, `SmellyItemUpdater`. To add a category, add a subclass, plus a shared instance and its `case` lines in `Updaters.forName`.
 - The quality helpers leave an out-of-range starting value alone instead of clamping it (e.g. a normal item at 60 drops to 59), which matches the original code's behavior.
 - `Item` is a plain data class (`name`, `sellIn`, `quality`).
 

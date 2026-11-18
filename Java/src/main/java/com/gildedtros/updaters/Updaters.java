@@ -52,8 +52,9 @@ public final class Updaters {
         }
     }
 
-    /** Item names must match exactly; anything unknown is a normal item. */
-    private ItemUpdater forName(String name) {
+    /** Item names must match exactly; anything unknown is a normal item. Package-private for testing. */
+    ItemUpdater forName(String name) {
+        Objects.requireNonNull(name, "name");
         switch (name) {
             case GOOD_WINE:
                 return GOOD_WINE_UPDATER;

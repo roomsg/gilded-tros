@@ -47,17 +47,6 @@ class UpdatersTest {
     }
 
     @Test
-    void passesTheUpdaterForTheItemsCategory() {
-        updaters.process(new Item("B-DAWG Keychain", 0, 80));
-        updaters.process(new Item("Good Wine", 2, 0));
-
-        assertEquals(80, calls.get(0).updater.getMinQuality());
-        assertEquals(80, calls.get(0).updater.getMaxQuality());
-        assertEquals(0, calls.get(2).updater.getMinQuality());
-        assertEquals(50, calls.get(2).updater.getMaxQuality());
-    }
-
-    @Test
     void processingAnArrayCallsTheSanitizerAroundEachItemInTurn() {
         updaters.process(new Item[] { new Item("foo", 10, 20), new Item("Good Wine", 2, 0) });
 

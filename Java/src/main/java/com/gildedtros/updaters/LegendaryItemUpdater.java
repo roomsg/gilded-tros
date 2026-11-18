@@ -6,7 +6,7 @@ import com.gildedtros.Item;
 class LegendaryItemUpdater extends ItemUpdater {
 
     @Override
-    public void update(Item item) {
+    void update(Item item) {
         // nothing changes
     }
 }

@@ -6,7 +6,7 @@ import com.gildedtros.Item;
 class NormalItemUpdater extends ItemUpdater {
 
     @Override
-    public void update(Item item) {
+    void update(Item item) {
         item.sellIn--;
         decreaseQuality(item, isExpired(item) ? 2 : 1);
     }

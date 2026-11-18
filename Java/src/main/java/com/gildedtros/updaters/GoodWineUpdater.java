@@ -6,7 +6,7 @@ import com.gildedtros.Item;
 class GoodWineUpdater extends ItemUpdater {
 
     @Override
-    public void update(Item item) {
+    void update(Item item) {
         item.sellIn--;
         increaseQuality(item, isExpired(item) ? 2 : 1);
     }

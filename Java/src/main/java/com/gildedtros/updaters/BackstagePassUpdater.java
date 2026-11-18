@@ -9,7 +9,7 @@ import com.gildedtros.Item;
 class BackstagePassUpdater extends ItemUpdater {
 
     @Override
-    public void update(Item item) {
+    void update(Item item) {
         int daysLeft = item.sellIn;
         item.sellIn--;
 

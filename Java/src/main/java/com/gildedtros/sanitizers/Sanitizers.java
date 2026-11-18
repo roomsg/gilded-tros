@@ -7,8 +7,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * The available {@link Sanitizer} implementations: {@link #NOOP}, {@link #LOG}, and {@link #log(Consumer)}
- * for logging to an output of your choice. Not instantiable.
+ * The available {@link Sanitizer} implementations: {@link #NOOP} and {@link #LOG}. Not instantiable.
  */
 public final class Sanitizers {
 
@@ -27,21 +26,20 @@ public final class Sanitizers {
     /**
      * Reports anomalies to {@code System.out} without changing anything: one line per stage at which an
      * item's quality is below its updater's {@linkplain ItemUpdater#getMinQuality() minimum} or above its
-     * {@linkplain ItemUpdater#getMaxQuality() maximum}. Same as {@code log(message -> System.out.println(message))}.
+     * {@linkplain ItemUpdater#getMaxQuality() maximum}.
      */
-    // a lambda rather than System.out::println, so it uses System.out as it is at the time of logging
-    // TODO - discuss if slf4j (or any other logging util) would make more sense
     public static final Sanitizer LOG = log(message -> System.out.println(message));
 
     /**
      * Creates a reporting only sanitizer, like {@link #LOG}, that passes each anomaly message to
-     * {@code output} instead of printing it. It never changes the item.
+     * {@code output} instead of printing it. It never changes the item. Package-private: {@link #LOG} is
+     * built with it, and tests use it to collect the messages.
      *
-     * @param output receives one message per anomaly, e.g. {@code logger::warn}, or {@code list::add} in tests
+     * @param output receives one message per anomaly, e.g. {@code list::add} in tests
      * @return the new sanitizer
      * @throws NullPointerException if {@code output} is null
      */
-    public static Sanitizer log(Consumer<String> output) {
+    static Sanitizer log(Consumer<String> output) {
         Objects.requireNonNull(output, "output must not be null");
         return new Sanitizer() {
             @Override
@@ -56,6 +54,7 @@ public final class Sanitizers {
     }
 
     // TODO - discuss if the following implementation variants would be useful
+    // - logger using slf4j (iso current System.out)
     // - report metrics (eg: prometheus) which could trigger alerts
-    // - actually modify the anomalous values
+    // - an actual sanitizer, actually modifying anomalous values
 }

@@ -2,7 +2,10 @@ package com.gildedtros.updaters;
 
 import com.gildedtros.Item;
 
-/** Gains 1 quality per day, 2 once the sell-by date has passed. */
+/**
+ * Gains 1 quality per day, 2 once the sell-by date has passed.
+ * TODO - confirm this (original) behavior is intentional (not spec'ed as such)
+ */
 class GoodWineUpdater extends BaseItemUpdater {
 
     @Override

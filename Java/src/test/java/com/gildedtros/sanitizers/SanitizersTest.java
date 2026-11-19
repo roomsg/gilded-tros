@@ -70,6 +70,7 @@ class SanitizersTest {
         logging.process(new Item("B-DAWG Keychain", 0, 79));
         assertEquals(2, messages.size());
         assertMessage(messages.get(0), "INPUT", "lower than minimum", "B-DAWG Keychain, 0, 79");
+        assertMessage(messages.get(1), "OUTPUT", "lower than minimum", "B-DAWG Keychain, 0, 79");
     }
 
     @Test

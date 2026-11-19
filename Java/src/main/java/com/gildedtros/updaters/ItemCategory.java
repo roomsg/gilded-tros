@@ -54,7 +54,7 @@ enum ItemCategory implements ItemUpdater {
             int daysLeft = item.sellIn;
             item.sellIn--;
             if (isExpired(item)) {
-                item.quality = 0;
+                item.quality = getMinQuality();   // worthless: as low as this category allows
             } else if (daysLeft <= 5) {
                 increaseQuality(item, 3);
             } else if (daysLeft <= 10) {

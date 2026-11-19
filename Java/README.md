@@ -47,3 +47,10 @@ whichever JDK runs the build.
 
 - Java devs@axxes are all on (at least) JDK17 (release 2021).
 - The requirements were not specifying which conferences are considered 'very interesting'. The original implementation only considered 'Re:Factor' and 'HAXX' as very interesting, I kept that same behavior.
+
+### Extra
+
+- Since input data can't always be trusted, `Updaters` calls a `Sanitizer` hook just before and just
+  after each item's update. `GildedTros` uses `Sanitizers.LOG`, which reports anomalies (a null item
+  name, or a quality outside the item's allowed range) to `System.out` without changing anything.
+  The same hook could later be used to actually correct anomalous values.

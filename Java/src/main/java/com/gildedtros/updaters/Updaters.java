@@ -68,16 +68,8 @@ public final class Updaters {
 
     /** Runs the sanitizer before and after {@code updater} ages {@code item}. Package-private for testing. */
     void processWith(ItemUpdater updater, Item item) {
-        verifyInput(updater, item);
-        updater.update(item);
-        verifyOutput(updater, item);
-    }
-
-    private void verifyInput(ItemUpdater updater, Item item) {
         sanitizer.verify(Sanitizer.Stage.INPUT, updater, item);
-    }
-
-    private void verifyOutput(ItemUpdater updater, Item item) {
+        updater.update(item);
         sanitizer.verify(Sanitizer.Stage.OUTPUT, updater, item);
     }
 }

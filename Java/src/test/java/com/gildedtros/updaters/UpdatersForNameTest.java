@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /** Tests for {@link Updaters#forName(String)}: which updater handles which item name. */
 class UpdatersForNameTest {
@@ -76,8 +75,7 @@ class UpdatersForNameTest {
     }
 
     @Test
-    void rejectsANullName() {
-        NullPointerException e = assertThrows(NullPointerException.class, () -> updaters.forName(null));
-        assertEquals("name must not be null", e.getMessage());
+    void aNullNameIsANormalItem() {
+        assertEquals(NormalItemUpdater.class, updaters.forName(null).getClass());
     }
 }

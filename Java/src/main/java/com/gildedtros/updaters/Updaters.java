@@ -55,11 +55,11 @@ public final class Updaters {
      * Ages every item by one day; each item is updated independently, in array order, exactly as
      * {@link #process(Item)} would.
      *
-     * @param items the items to age; they are changed in place
-     * @throws NullPointerException if {@code items} is null, or if an item or its name is null;
-     *         the items before that one have already been updated by then
+     * @param items the items to age; they are changed in place, and null elements are skipped
+     * @throws NullPointerException if {@code items} is null
      */
     public void process(Item[] items) {
+        Objects.requireNonNull(items, "items must not be null");
         for (Item item : items) {
             process(item);
         }
@@ -69,11 +69,14 @@ public final class Updaters {
      * Ages a single item by one day, using the updater for its category, with the sanitizer called
      * just before and just after the update.
      *
-     * @param item the item to age; its {@code sellIn} and {@code quality} are changed in place
-     * @throws NullPointerException if {@code item} or its name is null
+     * @param item the item to age; its {@code sellIn} and {@code quality} are changed in place.
+     *             A null item is skipped: nothing happens and the sanitizer is not called.
+     *             An item with a null name is aged as a normal item
      */
     public void process(Item item) {
-        Objects.requireNonNull(item, "item must not be null");
+        if (item == null) {
+            return;
+        }
         ItemUpdater updater = forName(item.name);
         processWith(updater, item);
     }
@@ -85,9 +88,14 @@ public final class Updaters {
         verifyOutput(updater, item);
     }
 
-    /** Item names must match exactly; anything unknown is a normal item. Package-private for testing. */
+    /**
+     * Item names must match exactly; anything unknown, including a null name, is a normal item.
+     * Package-private for testing.
+     */
     ItemUpdater forName(String name) {
-        Objects.requireNonNull(name, "name must not be null");
+        if (name == null) {
+            return NORMAL; // a String switch would throw on null
+        }
         switch (name) {
             case GOOD_WINE:
                 return GOOD_WINE_UPDATER;

@@ -74,22 +74,44 @@ class UpdatersTest {
     }
 
     @Test
-    void rejectsANullItem() {
-        NullPointerException e = assertThrows(NullPointerException.class, () -> updaters.process((Item) null));
-        assertEquals("item must not be null", e.getMessage());
+    void skipsANullItem() {
+        updaters.process((Item) null);
+
+        verifyNoInteractions(sanitizer);
     }
 
     @Test
-    void rejectsANullItemInAnArray() {
+    void agesAnItemWithANullNameAsANormalItem() {
+        Item item = new Item(null, 10, 20);
+
+        updaters.process(item);
+
+        assertEquals(9, item.sellIn);
+        assertEquals(19, item.quality);
+        verify(sanitizer).verify(same(Sanitizer.Stage.INPUT), any(NormalItemUpdater.class), same(item));
+        verify(sanitizer).verify(same(Sanitizer.Stage.OUTPUT), any(NormalItemUpdater.class), same(item));
+    }
+
+    @Test
+    void skipsANullItemInAnArray() {
         Item first = new Item("foo", 10, 20);
+        Item last = new Item("foo", 10, 20);
 
-        NullPointerException e = assertThrows(NullPointerException.class,
-                () -> updaters.process(new Item[] { first, null }));
-        assertEquals("item must not be null", e.getMessage());
+        updaters.process(new Item[] { first, null, last });
 
-        // the items before the null one have already been processed
+        // the items around the null one are still processed
+        assertEquals(19, first.quality);
+        assertEquals(19, last.quality);
         verify(sanitizer).verify(same(Sanitizer.Stage.INPUT), any(ItemUpdater.class), same(first));
         verify(sanitizer).verify(same(Sanitizer.Stage.OUTPUT), any(ItemUpdater.class), same(first));
+        verify(sanitizer).verify(same(Sanitizer.Stage.INPUT), any(ItemUpdater.class), same(last));
+        verify(sanitizer).verify(same(Sanitizer.Stage.OUTPUT), any(ItemUpdater.class), same(last));
+    }
+
+    @Test
+    void rejectsANullArray() {
+        NullPointerException e = assertThrows(NullPointerException.class, () -> updaters.process((Item[]) null));
+        assertEquals("items must not be null", e.getMessage());
     }
 
     @Test

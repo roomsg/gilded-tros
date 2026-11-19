@@ -21,7 +21,7 @@ class SanitizersTest {
     private static void assertMessage(String message, String stage, String problem, String item) {
         assertTrue(message.contains("on " + stage + ":"), message);
         assertTrue(message.contains(problem), message);
-        assertTrue(message.endsWith(item), message);
+        assertTrue(message.endsWith("{" + item + "}"), message);
     }
 
     @Test
@@ -47,8 +47,8 @@ class SanitizersTest {
         logging.process(new Item(null, 10, 20));
 
         assertEquals(2, messages.size());
-        assertMessage(messages.get(0), "INPUT", "'item.name' is null:", "null, 10, 20");
-        assertMessage(messages.get(1), "OUTPUT", "'item.name' is null:", "null, 9, 19");
+        assertMessage(messages.get(0), "INPUT", "'item.name' is null for: ", "null, 10, 20");
+        assertMessage(messages.get(1), "OUTPUT", "'item.name' is null for: ", "null, 9, 19");
     }
 
     @Test
@@ -56,9 +56,9 @@ class SanitizersTest {
         logging.process(new Item(null, 10, 60));
 
         assertEquals(4, messages.size());
-        assertMessage(messages.get(0), "INPUT", "'item.name' is null:", "null, 10, 60");
+        assertMessage(messages.get(0), "INPUT", "'item.name' is null for: ", "null, 10, 60");
         assertMessage(messages.get(1), "INPUT", "higher than maximum", "null, 10, 60");
-        assertMessage(messages.get(2), "OUTPUT", "'item.name' is null:", "null, 9, 59");
+        assertMessage(messages.get(2), "OUTPUT", "'item.name' is null for: ", "null, 9, 59");
         assertMessage(messages.get(3), "OUTPUT", "higher than maximum", "null, 9, 59");
     }
 

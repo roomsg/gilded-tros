@@ -47,15 +47,20 @@ public final class Sanitizers {
             @Override
             public void verify(Stage stage, ItemUpdater itemUpdater, Item item) {
                 if (item.name == null) {
-                    output.accept("Anomaly detected on " + stage + ": 'item.name' is null:" + item);
+                    report(output, stage, "'item.name' is null", item);
                 }
                 if (item.quality < itemUpdater.getMinQuality()) {
-                    output.accept("Anomaly detected on " + stage + ": 'item.quality' is lower than minimum:" + item);
+                    report(output, stage, "'item.quality' is lower than minimum", item);
                 } else if (item.quality > itemUpdater.getMaxQuality()) {
-                    output.accept("Anomaly detected on " + stage + ": 'item.quality' is higher than maximum:" + item);
+                    report(output, stage, "'item.quality' is higher than maximum", item);
                 }
             }
         };
+    }
+
+    /** Passes one anomaly message to {@code output}; the single place that defines the message format. */
+    private static void report(Consumer<String> output, Sanitizer.Stage stage, String problem, Item item) {
+        output.accept("Anomaly detected on " + stage + ": " + problem + " for: {" + item + "}");
     }
 
     // TODO - discuss if the following implementation variants would be useful

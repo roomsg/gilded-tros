@@ -4,8 +4,8 @@ The instructions are in [GildedTrosRequirements.txt](GildedTrosRequirements.txt)
 
 ## Getting the code
 
-The repository lives on GitHub at [roomsg/gilded-tros](https://github.com/roomsg/gilded-tros)
-(currently private, so you need to be given access). Work happens on `main`.
+The repository is public on GitHub at [roomsg/gilded-tros](https://github.com/roomsg/gilded-tros).
+Work happens on `main`.
 
 ```bash
 git clone git@github.com:roomsg/gilded-tros.git

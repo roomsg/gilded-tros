@@ -9,29 +9,15 @@ import java.util.Objects;
 /**
  * Entry point to this package: ages items by one day according to their category.
  *
- * <p>Each item is handled by the updater for its category, chosen by an exact match on the item's
- * name; any name that isn't a known special item is aged as a normal item. The {@link Sanitizer}
+ * <p>Each item is handled by the updater for its {@link ItemCategory}, chosen by an exact match on the
+ * item's name; any name that isn't a known special item is aged as a normal item. The {@link Sanitizer}
  * given to the constructor (default {@link Sanitizers#NOOP}) sees each item just before
  * ({@link Sanitizer.Stage#INPUT}) and just after ({@link Sanitizer.Stage#OUTPUT}) its update.
  *
- * <p>Instances are immutable and the category updaters are stateless, so one instance can be reused
+ * <p>Instances are immutable and the categories are stateless, so one instance can be reused
  * for any number of days.
  */
 public final class Updaters {
-
-    private static final String GOOD_WINE = "Good Wine";
-    private static final String B_DAWG_KEYCHAIN = "B-DAWG Keychain";
-    private static final String REFACTOR_PASS = "Backstage passes for Re:Factor";
-    private static final String HAXX_PASS = "Backstage passes for HAXX";
-    private static final String DUPLICATE_CODE = "Duplicate Code";
-    private static final String LONG_METHODS = "Long Methods";
-    private static final String UGLY_VARIABLE_NAMES = "Ugly Variable Names";
-
-    private static final ItemUpdater NORMAL = new NormalItemUpdater();
-    private static final ItemUpdater GOOD_WINE_UPDATER = new GoodWineUpdater();
-    private static final ItemUpdater LEGENDARY = new LegendaryItemUpdater();
-    private static final ItemUpdater BACKSTAGE_PASS = new BackstagePassUpdater();
-    private static final ItemUpdater SMELLY = new SmellyItemUpdater();
 
     private final Sanitizer sanitizer;
 
@@ -77,8 +63,7 @@ public final class Updaters {
         if (item == null) {
             return;
         }
-        ItemUpdater updater = forName(item.name);
-        processWith(updater, item);
+        processWith(ItemCategory.forName(item.name), item);
     }
 
     /** Runs the sanitizer before and after {@code updater} ages {@code item}. Package-private for testing. */
@@ -86,31 +71,6 @@ public final class Updaters {
         verifyInput(updater, item);
         updater.update(item);
         verifyOutput(updater, item);
-    }
-
-    /**
-     * Item names must match exactly; anything unknown, including a null name, is a normal item.
-     * Package-private for testing.
-     */
-    ItemUpdater forName(String name) {
-        if (name == null) {
-            return NORMAL; // a String switch would throw on null
-        }
-        switch (name) {
-            case GOOD_WINE:
-                return GOOD_WINE_UPDATER;
-            case B_DAWG_KEYCHAIN:
-                return LEGENDARY;
-            case REFACTOR_PASS:
-            case HAXX_PASS:
-                return BACKSTAGE_PASS;
-            case DUPLICATE_CODE:
-            case LONG_METHODS:
-            case UGLY_VARIABLE_NAMES:
-                return SMELLY;
-            default:
-                return NORMAL;
-        }
     }
 
     private void verifyInput(ItemUpdater updater, Item item) {

@@ -44,12 +44,11 @@ class UpdatersTest {
     @Test
     void processingAnItemUsesTheUpdaterForItsName() {
         Item item = new Item("Good Wine", 2, 0);
-        ItemUpdater expected = updaters.forName("Good Wine");
 
         updaters.process(item);
 
-        verify(sanitizer).verify(Sanitizer.Stage.INPUT, expected, item);
-        verify(sanitizer).verify(Sanitizer.Stage.OUTPUT, expected, item);
+        verify(sanitizer).verify(Sanitizer.Stage.INPUT, ItemCategory.GOOD_WINE, item);
+        verify(sanitizer).verify(Sanitizer.Stage.OUTPUT, ItemCategory.GOOD_WINE, item);
     }
 
     @Test
@@ -88,8 +87,8 @@ class UpdatersTest {
 
         assertEquals(9, item.sellIn);
         assertEquals(19, item.quality);
-        verify(sanitizer).verify(same(Sanitizer.Stage.INPUT), any(NormalItemUpdater.class), same(item));
-        verify(sanitizer).verify(same(Sanitizer.Stage.OUTPUT), any(NormalItemUpdater.class), same(item));
+        verify(sanitizer).verify(Sanitizer.Stage.INPUT, ItemCategory.NORMAL, item);
+        verify(sanitizer).verify(Sanitizer.Stage.OUTPUT, ItemCategory.NORMAL, item);
     }
 
     @Test

@@ -43,6 +43,26 @@ class SanitizersTest {
     }
 
     @Test
+    void logReportsANullNameBeforeAndAfterTheUpdate() {
+        logging.process(new Item(null, 10, 20));
+
+        assertEquals(2, messages.size());
+        assertMessage(messages.get(0), "INPUT", "'item.name' is null:", "null, 10, 20");
+        assertMessage(messages.get(1), "OUTPUT", "'item.name' is null:", "null, 9, 19");
+    }
+
+    @Test
+    void logReportsANullNameAndAnOutOfRangeQualitySeparately() {
+        logging.process(new Item(null, 10, 60));
+
+        assertEquals(4, messages.size());
+        assertMessage(messages.get(0), "INPUT", "'item.name' is null:", "null, 10, 60");
+        assertMessage(messages.get(1), "INPUT", "higher than maximum", "null, 10, 60");
+        assertMessage(messages.get(2), "OUTPUT", "'item.name' is null:", "null, 9, 59");
+        assertMessage(messages.get(3), "OUTPUT", "higher than maximum", "null, 9, 59");
+    }
+
+    @Test
     void logUsesTheRangeOfTheItemsOwnUpdater() {
         logging.process(new Item("B-DAWG Keychain", 0, 80));   // 80 is valid for legendary items only
         assertEquals(0, messages.size());

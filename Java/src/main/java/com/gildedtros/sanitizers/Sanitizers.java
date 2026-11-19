@@ -24,8 +24,9 @@ public final class Sanitizers {
     };
 
     /**
-     * Reports anomalies to {@code System.out} without changing anything: one line per stage at which an
-     * item's quality is below its updater's {@linkplain ItemUpdater#getMinQuality() minimum} or above its
+     * Reports anomalies to {@code System.out} without changing anything: one line per anomaly, at each
+     * stage at which an item's name is null, or its quality is below its updater's
+     * {@linkplain ItemUpdater#getMinQuality() minimum} or above its
      * {@linkplain ItemUpdater#getMaxQuality() maximum}.
      */
     public static final Sanitizer LOG = log(message -> System.out.println(message));
@@ -35,7 +36,8 @@ public final class Sanitizers {
      * {@code output} instead of printing it. It never changes the item. Package-private: {@link #LOG} is
      * built with it, and tests use it to collect the messages.
      *
-     * @param output receives one message per anomaly, e.g. {@code list::add} in tests
+     * @param output receives one message per anomaly (a null name, or quality out of range),
+     *               e.g. {@code list::add} in tests
      * @return the new sanitizer
      * @throws NullPointerException if {@code output} is null
      */
@@ -44,6 +46,9 @@ public final class Sanitizers {
         return new Sanitizer() {
             @Override
             public void verify(Stage stage, ItemUpdater itemUpdater, Item item) {
+                if (item.name == null) {
+                    output.accept("Anomaly detected on " + stage + ": 'item.name' is null:" + item);
+                }
                 if (item.quality < itemUpdater.getMinQuality()) {
                     output.accept("Anomaly detected on " + stage + ": 'item.quality' is lower than minimum:" + item);
                 } else if (item.quality > itemUpdater.getMaxQuality()) {

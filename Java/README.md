@@ -8,9 +8,11 @@ The repository is public on GitHub at [roomsg/gilded-tros](https://github.com/ro
 Work happens on `main`.
 
 ```bash
-git clone git@github.com:roomsg/gilded-tros.git
+git clone https://github.com/roomsg/gilded-tros.git
 cd gilded-tros/Java
 ```
+
+With an SSH key set up on GitHub, you can clone over SSH instead: `git clone git@github.com:roomsg/gilded-tros.git`.
 
 The repository holds the kata in several languages; this `Java/` folder is self-contained.
 It started as a copy of the Axxes Gilded Tros kata, which is no longer tracked as a remote,
